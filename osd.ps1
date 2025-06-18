@@ -1,7 +1,5 @@
 # OSD config
 Write-Host -ForegroundColor Green "Starting OSDCloud lite touch (must confirm erase disk)"
-# Log the global OSDCloud variable to the console/log
-Write-Host -ForegroundColor Cyan "OSDCloud global variable: $($global:OSDCloud)"
 
 Start-OSDCloud -OSName 'Windows 11 24H2 x64' -OSLanguage en-us -OSEdition Education -OSActivation Volume -Restart
 

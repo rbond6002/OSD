@@ -11,11 +11,11 @@ Write-host "Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $
 Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart
 
 # Create C:\Windows\Setup\Scripts\SetupComplete.cmd (automatically runs in OOBE)
-Write-Host -ForegroundColor Green "Create C:\Windows\Setup\Scripts\SetupComplete.cmd"
+Write-Host "Create C:\Windows\Setup\Scripts\SetupComplete.cmd" -ForegroundColor Green
 $SetupCompleteCMD = @'
 PowerShell.exe -Command Set-ExecutionPolicy RemoteSigned -Force
 PowerShell.exe -Command "& { Invoke-Expression -Command (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/rbond6002/OSD/refs/heads/main/SetupComplete.ps1') }"
 '@
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 
-Write-Host -ForegroundColor Green "Restarting"
+Write-Host "Restarting" -ForegroundColor Green

@@ -9,12 +9,4 @@ Write-Host "Starting OSDCloud lite touch (must confirm erase disk)" -ForegroundC
 Write-Host "Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart"
 Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart
 
-# Create SetupComplete.cmd (runs at OOBE)
-Write-Host "Create C:\Windows\Setup\Scripts\SetupComplete.cmd" -ForegroundColor Green
-$SetupCompleteCMD = @'
-PowerShell.exe -Command Set-ExecutionPolicy RemoteSigned -Force
-PowerShell.exe -Command "& { Invoke-Expression -Command (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/rbond6002/OSD/refs/heads/main/SetupComplete.ps1') }"
-'@
-$SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
-
 Write-Host "Restarting" -ForegroundColor Green

@@ -14,15 +14,15 @@ $src    = 'X:\OSDCloud\Config\Scripts\UploadHash-Entra.ps1'
 $dstDir = 'C:\AutoPilotHash'
 $dst    = "${dstDir}\UploadHash-Entra.ps1"
 
-if (Test-Path $src) {
-    if (-not (Test-Path $dstDir)) {
-        New-Item -Path $dstDir -ItemType Directory -Force | Out-Null
-    }
-    Copy-Item -Path $src -Destination $dst -Force
-    Write-Host "Copied UploadHash-Entra.ps1 to $dstDir" -ForegroundColor Green
-} else {
-    Write-Host "No UploadHash-Entra.ps1 found at $src – skipping copy." -ForegroundColor Green
-}
+#if (Test-Path $src) {
+#    if (-not (Test-Path $dstDir)) {
+#        New-Item -Path $dstDir -ItemType Directory -Force | Out-Null
+#    }
+#    Copy-Item -Path $src -Destination $dst -Force
+#    Write-Host "Copied UploadHash-Entra.ps1 to $dstDir" -ForegroundColor Green
+#} else {
+#    Write-Host "No UploadHash-Entra.ps1 found at $src – skipping copy." -ForegroundColor Green
+#}
 
 # Create C:\Windows\Setup\Scripts\SetupComplete.cmd (automatically runs in OOBE)
 Write-Host "Create C:\Windows\Setup\Scripts\SetupComplete.cmd" -ForegroundColor Green

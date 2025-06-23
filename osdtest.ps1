@@ -48,13 +48,11 @@ $UnattendXml = @'
                xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       <RunSynchronous>
-        <!-- 1) Run the hash import script -->
         <RunSynchronousCommand wcm:action="add">
           <Order>1</Order>
           <Description>Start Hash Import</Description>
           <Path>PowerShell -ExecutionPolicy Bypass C:\AutoPilotHash\UploadHash-Entra.ps1</Path>
         </RunSynchronousCommand>
-        <!-- 2) Cleanup the AutoPilotHash folder -->
         <RunSynchronousCommand wcm:action="add">
           <Order>2</Order>
           <Description>Remove AutoPilotHash Folder</Description>

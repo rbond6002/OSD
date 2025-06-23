@@ -1,4 +1,4 @@
-# Variables to define the Windows OS / Edition etc to be applied during OSDCloud
+ # Variables to define the Windows OS / Edition etc to be applied during OSDCloud
 $OSName       = 'Windows 11 24H2 x64'
 $OSEdition    = 'Education'
 $OSActivation = 'Volume'
@@ -24,7 +24,7 @@ if (Test-Path $src) {
     Write-Host "Copied UploadHash-Entra.ps1 to $dstDir" -ForegroundColor Green
 }
 else {
-    Write-Host "No UploadHash-Entra.ps1 found at $src – skipping copy." -ForegroundColor Green
+    Write-Host "No UploadHash-Entra.ps1 found at $src skipping copy." -ForegroundColor Green
 }
 
 # Create SetupComplete.cmd (runs at OOBE)
@@ -74,3 +74,4 @@ $UnattendPath = "$Panther\Unattend.xml"
 $UnattendXml | Out-File -FilePath $UnattendPath -Encoding utf8 -Width 2000 -Force
 
 Write-Host "Restarting" -ForegroundColor Green
+ 

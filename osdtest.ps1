@@ -35,42 +35,4 @@ PowerShell.exe -Command "& { Invoke-Expression -Command (Invoke-RestMethod -Uri 
 '@
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 
-# Build Unattend.xml with two RunSynchronous steps: import & cleanup
-$UnattendXml = @'
-<?xml version="1.0" encoding="utf-8"?>
-<unattend xmlns="urn:schemas-microsoft-com:unattend">
-  <settings pass="specialize">
-    <component name="Microsoft-Windows-Deployment"
-               processorArchitecture="amd64"
-               publicKeyToken="31bf3856ad364e35"
-               language="neutral"
-               versionScope="nonSxS"
-               xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-      <RunSynchronous>
-        <RunSynchronousCommand wcm:action="add">
-          <Order>1</Order>
-          <Description>Start Hash Import</Description>
-          <Path>PowerShell -ExecutionPolicy Bypass C:\AutoPilotHash\UploadHash-Entra.ps1</Path>
-        </RunSynchronousCommand>
-        <RunSynchronousCommand wcm:action="add">
-          <Order>2</Order>
-          <Description>Remove AutoPilotHash Folder</Description>
-          <Path>PowerShell -ExecutionPolicy Bypass -Command "Remove-Item -Path 'C:\AutoPilotHash' -Recurse -Force"</Path>
-        </RunSynchronousCommand>
-      </RunSynchronous>
-    </component>
-  </settings>
-</unattend>
-'@
-
-# Ensure Panther folder and write Unattend.xml
-if (-not (Test-Path 'C:\Windows\Panther')) {
-    New-Item -Path 'C:\Windows\Panther' -ItemType Directory -Force | Out-Null
-}
-
-$Panther      = 'C:\Windows\Panther'
-$UnattendPath = "$Panther\Unattend.xml"
-$UnattendXml | Out-File -FilePath $UnattendPath -Encoding utf8 -Width 2000 -Force
-
 Write-Host "Restarting" -ForegroundColor Green

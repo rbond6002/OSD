@@ -1,4 +1,3 @@
-$auth        = 'X:\OSDCloud\Config\Scripts\Auth.ps1'
 $OSName      = 'Windows 11 24H2 x64'
 $OSEdition   = 'Education'
 $OSActivation= 'Volume'
@@ -26,6 +25,7 @@ if (Test-Path $autoSrc) {
 }
 
 # Copy Auth.ps1
+$auth        = 'X:\OSDCloud\Config\Scripts\Auth.ps1'
 $authDst = Join-Path $dstDir (Split-Path $auth -Leaf)
 if (Test-Path $auth) {
     Copy-Item -Path $auth -Destination $authDst -Force

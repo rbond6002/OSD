@@ -1,29 +1,33 @@
-#Variables to define the Windows OS / Edition etc to be applied during OSDCloud
-$OSName = 'Windows 11 24H2 x64'
-$OSEdition = 'Education'
-$OSActivation = 'Volume'
-$OSLanguage = 'en-us'
+# Variables to define the Windows OS / Edition etc to be applied during OSDCloud
+$OSName      = 'Windows 11 24H2 x64'
+$OSEdition   = 'Education'
+$OSActivation= 'Volume'
+$OSLanguage  = 'en-us'
 
-#Launch OSDCloud
+# Launch OSDCloud
 Write-Host "Starting OSDCloud lite touch (must confirm erase disk)" -ForegroundColor Green
-Write-host "Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart"
-
+Write-Host "Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart"
 Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart
 
+# Copy the hash script to C:\AutoPilotHash
 Write-Host "Copying Hash Script" -ForegroundColor Green
 
-$src = 'X:\OSDCloud\Config\Scripts\UploadHash-Entra.ps1'
-$dst = 'C:\OSDCloud\UploadHash-Entra.ps1'
+$src    = 'X:\OSDCloud\Config\Scripts\UploadHash-Entra.ps1'
+$dstDir = 'C:\AutoPilotHash'
+$dst    = "$dstDir\UploadHash-Entra.ps1"
 
 if (Test-Path $src) {
-    Copy-Item $src $dst -Force
-    Write-Host "Copied UploadHash-Entra.ps1"  -ForegroundColor Green
+    if (-not (Test-Path $dstDir)) {
+        New-Item -Path $dstDir -ItemType Directory -Force | Out-Null
+    }
+    Copy-Item -Path $src -Destination $dst -Force
+    Write-Host "Copied UploadHash-Entra.ps1 to $dstDir" -ForegroundColor Green
 }
 else {
-	Write-Host "No UploadHash-Entra.ps1 found at $src – skipping copy."  -ForegroundColor Green
+    Write-Host "No UploadHash-Entra.ps1 found at $src – skipping copy." -ForegroundColor Green
 }
 
-# Create C:\Windows\Setup\Scripts\SetupComplete.cmd (automatically runs in OOBE)
+# Create SetupComplete.cmd (runs at OOBE)
 Write-Host "Create C:\Windows\Setup\Scripts\SetupComplete.cmd" -ForegroundColor Green
 $SetupCompleteCMD = @'
 PowerShell.exe -Command Set-ExecutionPolicy RemoteSigned -Force
@@ -31,28 +35,43 @@ PowerShell.exe -Command "& { Invoke-Expression -Command (Invoke-RestMethod -Uri 
 '@
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 
+# Build Unattend.xml with two RunSynchronous steps: import & cleanup
 $UnattendXml = @'
 <?xml version="1.0" encoding="utf-8"?>
 <unattend xmlns="urn:schemas-microsoft-com:unattend">
-    <settings pass="specialize">
-        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <RunSynchronous>
-                <RunSynchronousCommand wcm:action="add">
-                    <Order>1</Order>
-                    <Description>Start Autopilot Import & Assignment Process</Description>
-                    <Path>PowerShell -ExecutionPolicy Bypass C:\OSDCloud\UploadHash-Entra.ps1</Path>
-                </RunSynchronousCommand>
-            </RunSynchronous>
-        </component>
-    </settings>
+  <settings pass="specialize">
+    <component name="Microsoft-Windows-Deployment"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS"
+               xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <RunSynchronous>
+        <!-- 1) Run the hash import script -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Description>Start Hash Import</Description>
+          <Path>PowerShell -ExecutionPolicy Bypass C:\AutoPilotHash\UploadHash-Entra.ps1</Path>
+        </RunSynchronousCommand>
+        <!-- 2) Cleanup the AutoPilotHash folder -->
+        <RunSynchronousCommand wcm:action="add">
+          <Order>2</Order>
+          <Description>Remove AutoPilotHash Folder</Description>
+          <Path>PowerShell -ExecutionPolicy Bypass -Command "Remove-Item -Path 'C:\AutoPilotHash' -Recurse -Force"</Path>
+        </RunSynchronousCommand>
+      </RunSynchronous>
+    </component>
+  </settings>
 </unattend>
-'@ 
+'@
 
-if (-NOT (Test-Path 'C:\Windows\Panther')) {
-    New-Item -Path 'C:\Windows\Panther'-ItemType Directory -Force -ErrorAction Stop | Out-Null
+# Write Unattend.xml to the Panther folder
+if (-not (Test-Path 'C:\Windows\Panther')) {
+    New-Item -Path 'C:\Windows\Panther' -ItemType Directory -Force -ErrorAction Stop | Out-Null
 }
 
-$Panther = 'C:\Windows\Panther'
+$Panther      = 'C:\Windows\Panther'
 $UnattendPath = "$Panther\Unattend.xml"
 $UnattendXml | Out-File -FilePath $UnattendPath -Encoding utf8 -Width 2000 -Force
 

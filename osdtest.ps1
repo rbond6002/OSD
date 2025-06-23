@@ -1,8 +1,8 @@
 # Variables to define the Windows OS / Edition etc to be applied during OSDCloud
-$OSName      = 'Windows 11 24H2 x64'
-$OSEdition   = 'Education'
-$OSActivation= 'Volume'
-$OSLanguage  = 'en-us'
+$OSName       = 'Windows 11 24H2 x64'
+$OSEdition    = 'Education'
+$OSActivation = 'Volume'
+$OSLanguage   = 'en-us'
 
 # Launch OSDCloud
 Write-Host "Starting OSDCloud lite touch (must confirm erase disk)" -ForegroundColor Green
@@ -64,9 +64,9 @@ $UnattendXml = @'
 </unattend>
 '@
 
-# Write Unattend.xml to the Panther folder
+# Ensure Panther folder and write Unattend.xml
 if (-not (Test-Path 'C:\Windows\Panther')) {
-    New-Item -Path 'C:\Windows\Panther' -ItemType Directory -Force -ErrorAction Stop | Out-Null
+    New-Item -Path 'C:\Windows\Panther' -ItemType Directory -Force | Out-Null
 }
 
 $Panther      = 'C:\Windows\Panther'

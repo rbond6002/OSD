@@ -24,12 +24,12 @@ if (Test-Path $src) {
     Write-Host "No UploadHash-Entra.ps1 found at $src – skipping copy." -ForegroundColor Green
 }
 
-# Create SetupComplete.cmd (runs at OOBE)
+# Create C:\Windows\Setup\Scripts\SetupComplete.cmd (automatically runs in OOBE)
 Write-Host "Create C:\Windows\Setup\Scripts\SetupComplete.cmd" -ForegroundColor Green
-$SetupCompleteCMD = @"
-PowerShell.exe -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy RemoteSigned -Force"
-PowerShell.exe -ExecutionPolicy Bypass -Command "Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/rbond6002/OSD/refs/heads/main/SetupComplete.ps1')"
-"@
+$SetupCompleteCMD = @'
+PowerShell.exe -Command Set-ExecutionPolicy RemoteSigned -Force
+PowerShell.exe -Command "& { Invoke-Expression -Command (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/rbond6002/OSD/refs/heads/main/SetupComplete.ps1') }"
+'@
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 
 # Build Unattend.xml with two RunSynchronous steps: import & cleanup

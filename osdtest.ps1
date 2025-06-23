@@ -9,10 +9,10 @@ Write-Host "Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $
 Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart
 
 # Copy the hash script to C:\AutoPilotHash
-Write-Host "Copying Hash Script" -ForegroundColor Green
-$src    = 'X:\OSDCloud\Config\Scripts\UploadHash-Entra.ps1'
-$dstDir = 'C:\AutoPilotHash'
-$dst    = "${dstDir}\UploadHash-Entra.ps1"
+#Write-Host "Copying Hash Script" -ForegroundColor Green
+#$src    = 'X:\OSDCloud\Config\Scripts\UploadHash-Entra.ps1'
+#$dstDir = 'C:\AutoPilotHash'
+#$dst    = "${dstDir}\UploadHash-Entra.ps1"
 
 #if (Test-Path $src) {
 #    if (-not (Test-Path $dstDir)) {

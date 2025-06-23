@@ -1,4 +1,4 @@
- # oobetasks
+# oobetasks
 
 $scriptFolderPath   = "$env:SystemDrive\OSDCloud\Scripts"
 $ScriptPathOOBE     = Join-Path -Path $scriptFolderPath -ChildPath "OOBE.ps1"
@@ -17,6 +17,10 @@ Start-Transcript -Path (Join-Path "`$env:ProgramData\Microsoft\IntuneManagementE
 # Run Autopilot hash upload
 Write-Host -ForegroundColor DarkGray "Running UploadHash-Entra.ps1"
 Start-Process PowerShell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File "C:\AutoPilotHash\UploadHash-Entra.ps1"' -Wait
+
+# Run cleanup script
+Write-Host -ForegroundColor DarkGray "Running cleanup.ps1"
+Invoke-Expression -Command (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/rbond6002/OSD/refs/heads/main/cleanup.ps1")
 
 # Cleanup scheduled tasks
 Write-Host -ForegroundColor DarkGray "Unregistering Scheduled Tasks"
@@ -100,4 +104,3 @@ action.Path      = 'C:\OSDCloud\ServiceUI.exe'
 action.Arguments = '-process:RuntimeBroker.exe "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -NoExit -File "' + $ScriptPathOOBE + '"'
 
 $rootFolder.RegisterTaskDefinition($taskName, $taskDef, 6, "SYSTEM", $null, 5)
- 

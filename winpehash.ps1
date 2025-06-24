@@ -1,4 +1,4 @@
-# Define OS parameters
+ # Define OS parameters
 $OSName      = 'Windows 11 24H2 x64'
 $OSEdition   = 'Education'
 $OSActivation= 'Volume'
@@ -25,8 +25,11 @@ $scriptSource = 'X:\OSDCloud\Config\Scripts'
 Copy-Item -Path "$scriptSource\PCPKsp.dll" -Destination "X:\Windows\System32\PCPKsp.dll" -Force
 
 # Create OA3 Hash
-If (Test-Path X:\Windows\System32\wpeutil.exe -and Test-Path X:\Windows\System32\PCPKsp.dll) {
-    rundll32 X:\Windows\System32\PCPKsp.dll,DllInstall
+If (
+    (Test-Path "X:\Windows\System32\wpeutil.exe") -and
+    (Test-Path "X:\Windows\System32\PCPKsp.dll")
+) {
+    & rundll32.exe "X:\Windows\System32\PCPKsp.dll",DllInstall
 }
 
 # Change Directory so OA3Tool finds the files
@@ -83,4 +86,4 @@ PowerShell.exe -Command "& { Invoke-Expression -Command (Invoke-RestMethod -Uri 
 '@
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 
-Write-Host "Restarting" -ForegroundColor Green
+Write-Host "Restarting" -ForegroundColor Green 

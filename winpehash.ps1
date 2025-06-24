@@ -59,15 +59,10 @@ If (Test-Path $hashFile) {
       ForEach-Object { $_ -replace '"','' } |
       Out-File $OutputFile
 
-    "$(Get-Date -Format o) - SUCCESS: Parsed hash and wrote to $OutputFile" |
-      Out-File $LogFile -Append
-
 } else {
 
     $msg = "$(Get-Date -Format o) - ERROR: Hash file not found at $hashFile"
     Write-Host $msg -ForegroundColor Yellow
-    $msg | Out-File $LogFile -Append
-
 }
 
 # Upload the hash

@@ -7,7 +7,7 @@ $OSLanguage  = 'en-us'
 # Retrieve stored credentials from Proces environment
 $TenantID   = [Environment]::GetEnvironmentVariable('OSDCloudAPTenID','Machine')
 $AppID      = [Environment]::GetEnvironmentVariable('OSDCloudAPAppID','Machine')
-$AppSecret  = [Environment]::GetEnvironmentVariable('OSDCloudAPAppSecret','Process')
+$AppSecret  = [Environment]::GetEnvironmentVariable('OSDCloudAPAppSecret','Machine')
 
 # Echo values for verification
 Write-Host "TenantID:   $TenantID"

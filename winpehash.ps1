@@ -32,9 +32,6 @@ If (
     & rundll32.exe "X:\Windows\System32\PCPKsp.dll",DllInstall
 }
 
-# Change Directory so OA3Tool finds the files
-Set-Location $PSScriptRoot
-
 # Get SN from WMI
 $serial = (Get-WmiObject -Class Win32_BIOS).SerialNumber
 

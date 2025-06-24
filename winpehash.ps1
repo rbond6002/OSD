@@ -69,24 +69,14 @@ Start-Sleep 30
 
 # Install and import modules
 Invoke-Expression (Invoke-RestMethod sandbox.osdcloud.com)
-#Install-Module WindowsAutoPilotIntune -SkipPublisherCheck -Force
+Install-Module WindowsAutoPilotIntune -SkipPublisherCheck -Force
 
 # Connect to MS Graph using service principal
-#Connect-MSGraphApp -Tenant $TenantID -AppId $AppID -AppSecret $AppSecret
+Connect-MSGraphApp -Tenant $TenantID -AppId $AppID -AppSecret $AppSecret
 
 # Import Autopilot CSV to Tenant
-#Import-AutoPilotCSV -csvFile $OutputFile
+Import-AutoPilotCSV -csvFile $OutputFile
 
-Install-Script -Name Get-WindowsAutopilotInfoCommunity -Force
-
-Get-WindowsAutoPilotInfoCommunity.ps1 `
-  -Online `
-  -InputFile	$OutputFile`
-  -GroupTag		$selectedTag `
-  -Assign `
-  -TenantID		$TenantID `
-  -AppID		$AppID `
-  -AppSecret	$AppSecret
 
 # Launch OSDCloud
 Write-Host "Starting OSDCloud lite touch (must confirm erase disk)" -ForegroundColor Green

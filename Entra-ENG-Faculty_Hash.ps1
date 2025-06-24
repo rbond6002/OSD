@@ -4,9 +4,6 @@ $OSEdition   = 'Education'
 $OSActivation= 'Volume'
 $OSLanguage  = 'en-us'
 
-Write-DarkGrayHost "Copying PFX file & the import script"
-Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
-
 # Launch OSDCloud
 Write-Host "Starting OSDCloud lite touch (must confirm erase disk)" -ForegroundColor Green
 Write-Host "Afterwards, it will add the device to Autopilot with Grouptag Entra-ENG-Faculty" -ForegroundColor Green
@@ -20,6 +17,9 @@ PowerShell.exe -Command Set-ExecutionPolicy RemoteSigned -Force
 PowerShell.exe -Command "& { Invoke-Expression -Command (Invoke-RestMethod -Uri 'https://github.com/rbond6002/OSD/blob/main/cleanup.ps1') }"
 '@
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
+
+Write-DarkGrayHost "Copying PFX file & the import script"
+Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
 
 # Build Unattend.xml with static path import & cleanup, with group tag variable
 $UnattendXml = @'

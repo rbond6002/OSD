@@ -36,7 +36,8 @@ If (
 $serial = (Get-WmiObject -Class Win32_BIOS).SerialNumber
 
 # Run OA3Tool
-&X:\OSDCloud\Config\Scripts\oa3tool.exe /Report /ConfigFile=X:\OSDCloud\Config\Scripts\OA3.cfg /NoKeyCheck
+Set-Location -Path "X:\OSDCloud\Config\Scripts"
+& X:\OSDCloud\Config\Scripts\oa3tool.exe /Report /ConfigFile="X:\OSDCloud\Config\Scripts\OA3.cfg" /NoKeyCheck
 
 # Check if Hash was found
 $hashFile = "X:\OSDCloud\Config\Scripts\OA3.xml"
@@ -74,7 +75,7 @@ Start-Sleep 30
 
 # Install and import modules
 Invoke-Expression (Invoke-RestMethod sandbox.osdcloud.com)
-Install-Module WindowsAutoPilotIntune -SkipPublisherCheck -Force
+#Install-Module WindowsAutoPilotIntune -SkipPublisherCheck -Force
 
 # Connect to MS Graph using service principal
 #Connect-MSGraphApp -Tenant $TenantID -AppId $AppID -AppSecret $AppSecret

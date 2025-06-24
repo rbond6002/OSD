@@ -5,7 +5,7 @@ $OSActivation= 'Volume'
 $OSLanguage  = 'en-us'
 
 # Retrieve stored credentials from Proces environment
-$TenantID   = [Environment]::GetEnvironmentVariable('OSDCloudAPTenantID','Process')  # $env:OSDCloudAPTenantID doesn't work within WinPE
+$TenantID   = [Environment]::GetEnvironmentVariable('OSDCloudAPTenantID','Process')
 $AppID      = [Environment]::GetEnvironmentVariable('OSDCloudAPAppID','Process')
 $AppSecret  = [Environment]::GetEnvironmentVariable('OSDCloudAPAppSecret','Process')
 

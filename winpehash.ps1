@@ -1,4 +1,6 @@
- # Define OS parameters
+$GroupTag = "Entra-ENG-Faculty"
+
+# Define OS parameters
 $OSName      = 'Windows 11 24H2 x64'
 $OSEdition   = 'Education'
 $OSActivation= 'Volume'
@@ -16,13 +18,8 @@ Write-Host "TenantID:   $TenantID"
 Write-Host "AppID:      $AppID"
 Write-Host "AppSecret:  $AppSecret"
 
-# Pop up a one-column GridView with built-in filter/search
-$GroupTag = "Entra-ENG-Faculty"
-
-# Define source and target
-$scriptSource = 'X:\OSDCloud\Config\Scripts'
 # Copy PCPKsp.dll to the specified directory
-Copy-Item -Path "$scriptSource\PCPKsp.dll" -Destination "X:\Windows\System32\PCPKsp.dll" -Force
+Copy-Item -Path "X:\OSDCloud\Config\Scripts\PCPKsp.dll" -Destination "X:\Windows\System32\PCPKsp.dll" -Force
 
 # Create OA3 Hash
 If (
@@ -83,4 +80,4 @@ PowerShell.exe -Command "& { Invoke-Expression -Command (Invoke-RestMethod -Uri 
 '@
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 
-Write-Host "Restarting" -ForegroundColor Green 
+Write-Host "Restarting" -ForegroundColor Green

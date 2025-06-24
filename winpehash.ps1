@@ -64,6 +64,44 @@ If (Test-Path $hashFile) {
     Write-Host $msg -ForegroundColor Yellow
 }
 
+# Pure PowerShell NTP query against time.windows.com and set system time
+function Get-NtpTime {
+    param(
+        [string] $Server = 'time.windows.com'
+    )
+    # NTP runs on UDP port 123
+    $endpoint = New-Object Net.IPEndPoint ([Net.IPAddress]::Parse((Resolve-DnsName $Server -Type A).IPAddress)), 123
+    $socket   = New-Object Net.Sockets.UdpClient
+    $socket.Connect($endpoint)
+    $socket.Client.ReceiveTimeout = 3000
+    
+    # Build request packet (48 bytes, with first byte 0x1B)
+    $ntpData = New-Object byte[] 48
+    $ntpData[0] = 0x1B
+    $socket.Send($ntpData, $ntpData.Length) | Out-Null
+    
+    # Receive response
+    $response = $socket.Receive([ref]$endpoint)
+    $socket.Close()
+    
+    # Extract transmit timestamp (bytes 40-47)
+    [Array]::Reverse($response, 40, 4)
+    [Array]::Reverse($response, 44, 4)
+    $intPart  = [BitConverter]::ToUInt32($response, 40)
+    $fracPart = [BitConverter]::ToUInt32($response, 44)
+    $milliseconds = ($intPart * 1000) + (($fracPart * 1000) / 0x100000000)
+    
+    # Convert to DateTime (NTP epoch is 1900-01-01)
+    return (Get-Date '1900-01-01').AddMilliseconds($milliseconds)
+}
+
+# Retrieve NTP time and set system clock
+echo "Fetching time from time.windows.com..."
+$DateTime = Get-NtpTime -Server 'time.windows.com'
+Write-Host "NTP time: $DateTime"
+Set-Date -Date $DateTime
+Write-Host "System clock updated."
+
 # Upload the hash
 Start-Sleep 3
 
@@ -76,7 +114,6 @@ Connect-MSGraphApp -Tenant $TenantID -AppId $AppID -AppSecret $AppSecret
 
 # Import Autopilot CSV to Tenant
 Import-AutoPilotCSV -csvFile $OutputFile
-
 
 # Launch OSDCloud
 Write-Host "Starting OSDCloud lite touch (must confirm erase disk)" -ForegroundColor Green

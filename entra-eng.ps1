@@ -1,6 +1,7 @@
 #updated 1.0
 $GroupTag = 'Entra-ENG-Faculty'
 
+#OSDCloud Variables
 $OSName      = 'Windows 11 24H2 x64'
 $OSEdition   = 'Education'
 $OSActivation= 'Volume'
@@ -45,7 +46,7 @@ PowerShell.exe -Command "& { Invoke-Expression -Command (Invoke-RestMethod -Uri 
 '@
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 
-# Build Unattend.xml with static path import & cleanup
+# Build Unattend.xml with static path import & cleanup, with group tag variable
 $UnattendXml = @'
 <?xml version="1.0" encoding="utf-8"?>
 <unattend xmlns="urn:schemas-microsoft-com:unattend">

@@ -1,3 +1,4 @@
+$GroupTag    = 'Entra-ENG-Faculty'
 $OSName      = 'Windows 11 24H2 x64'
 $OSEdition   = 'Education'
 $OSActivation= 'Volume'
@@ -5,9 +6,9 @@ $OSLanguage  = 'en-us'
 
 # Launch OSDCloud
 Write-Host "Starting OSDCloud lite touch (must confirm erase disk)" -ForegroundColor Green
-Write-Host "Afterwards, it will add the device to Autopilot with Grouptag Entra-ENG-Faculty" -ForegroundColor Green
-Write-Host "Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart"
-Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart
+Write-Host "Afterwards, it will add the device to Autopilot with GroupTag $GroupTag" -ForegroundColor Green
+Write-Host "Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart -GroupTag $GroupTag"
+Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart -GroupTag $GroupTag
 
 # Copy the hash script and Auth script to C:\AutoPilotHash
 Write-Host "Copying scripts to C:\AutoPilotHash" -ForegroundColor Green
@@ -25,7 +26,7 @@ if (Test-Path $autoSrc) {
 }
 
 # Copy Auth.ps1
-$auth        = 'X:\OSDCloud\Config\Scripts\Auth.ps1'
+$auth    = 'X:\OSDCloud\Config\Scripts\Auth.ps1'
 $authDst = Join-Path $dstDir (Split-Path $auth -Leaf)
 if (Test-Path $auth) {
     Copy-Item -Path $auth -Destination $authDst -Force
@@ -43,7 +44,7 @@ PowerShell.exe -Command "& { Invoke-Expression -Command (Invoke-RestMethod -Uri 
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 
 # Build Unattend.xml with static path import & cleanup
-$UnattendXml = @'
+$UnattendXml = @"
 <?xml version="1.0" encoding="utf-8"?>
 <unattend xmlns="urn:schemas-microsoft-com:unattend">
   <settings pass="specialize">
@@ -58,7 +59,7 @@ $UnattendXml = @'
         <RunSynchronousCommand wcm:action="add">
           <Order>1</Order>
           <Description>Start Hash Import</Description>
-          <Path>PowerShell -ExecutionPolicy Bypass -File C:\AutoPilotHash\AutoPilot.ps1 -AuthFile C:\AutoPilotHash\Auth.ps1 -GroupTag "Entra-ENG-Faculty"</Path>
+          <Path>PowerShell -ExecutionPolicy Bypass -File C:\AutoPilotHash\AutoPilot.ps1 -AuthFile C:\AutoPilotHash\Auth.ps1 -GroupTag $GroupTag</Path>
         </RunSynchronousCommand>
         <RunSynchronousCommand wcm:action="add">
           <Order>2</Order>
@@ -69,7 +70,7 @@ $UnattendXml = @'
     </component>
   </settings>
 </unattend>
-'@
+"@
 
 # Ensure Panther folder and write Unattend.xml
 if (-not (Test-Path 'C:\Windows\Panther')) {

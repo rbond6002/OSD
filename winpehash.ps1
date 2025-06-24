@@ -1,5 +1,3 @@
-$GroupTag = "Entra-ENG-Faculty"
-
 # Define OS parameters
 $OSName      = 'Windows 11 24H2 x64'
 $OSEdition   = 'Education'
@@ -18,8 +16,13 @@ Write-Host "TenantID:   $TenantID"
 Write-Host "AppID:      $AppID"
 Write-Host "AppSecret:  $AppSecret"
 
+# Pop up a one-column GridView with built-in filter/search
+$GroupTag = "Entra-ENG-Faculty"
+
+# Define source and target
+$scriptSource = 'X:\OSDCloud\Config\Scripts'
 # Copy PCPKsp.dll to the specified directory
-Copy-Item -Path "X:\OSDCloud\Config\Scripts\PCPKsp.dll" -Destination "X:\Windows\System32\PCPKsp.dll" -Force
+Copy-Item -Path "$scriptSource\PCPKsp.dll" -Destination "X:\Windows\System32\PCPKsp.dll" -Force
 
 # Create OA3 Hash
 If (
@@ -36,22 +39,34 @@ $serial = (Get-WmiObject -Class Win32_BIOS).SerialNumber
 &X:\OSDCloud\Config\Scripts\oa3tool.exe /Report /ConfigFile=X:\OSDCloud\Config\Scripts\OA3.cfg /NoKeyCheck
 
 # Check if Hash was found
-If (Test-Path "X:\OSDCloud\Config\Scripts\OA3.xml") {
-    [xml]$xmlhash = Get-Content -Path "X:\OSDCloud\Config\Scripts\OA3.xml"
+$hashFile = "X:\OSDCloud\Config\Scripts\OA3.xml"
+If (Test-Path $hashFile) {
+
+    [xml]$xmlhash = Get-Content -Path $hashFile
     $hash     = $xmlhash.Key.HardwareHash
-    $computers = @()
+
     $c = [PSCustomObject]@{
         'Device Serial Number' = $serial
-        'Windows Product ID'     = ''
-        'Hardware Hash'          = $hash
-        'Group Tag'              = $GroupTag
+        'Windows Product ID'   = ''
+        'Hardware Hash'        = $hash
+        'Group Tag'            = $GroupTag
     }
-    $computers += $c
-    $computers |
-        Select 'Device Serial Number','Windows Product ID','Hardware Hash','Group Tag' |
-        ConvertTo-Csv -NoTypeInformation |
-        ForEach-Object { $_ -replace '"','' } |
-        Out-File $OutputFile
+
+    $c |
+      Select 'Device Serial Number','Windows Product ID','Hardware Hash','Group Tag' |
+      ConvertTo-Csv -NoTypeInformation |
+      ForEach-Object { $_ -replace '"','' } |
+      Out-File $OutputFile
+
+    "$(Get-Date -Format o) - SUCCESS: Parsed hash and wrote to $OutputFile" |
+      Out-File $LogFile -Append
+
+} else {
+
+    $msg = "$(Get-Date -Format o) - ERROR: Hash file not found at $hashFile"
+    Write-Host $msg -ForegroundColor Yellow
+    $msg | Out-File $LogFile -Append
+
 }
 
 # Upload the hash
@@ -62,10 +77,21 @@ Invoke-Expression (Invoke-RestMethod sandbox.osdcloud.com)
 Install-Module WindowsAutoPilotIntune -SkipPublisherCheck -Force
 
 # Connect to MS Graph using service principal
-Connect-MSGraphApp -Tenant $TenantID -AppId $AppID -AppSecret $AppSecret
+#Connect-MSGraphApp -Tenant $TenantID -AppId $AppID -AppSecret $AppSecret
 
 # Import Autopilot CSV to Tenant
-Import-AutoPilotCSV -csvFile $OutputFile
+#Import-AutoPilotCSV -csvFile $OutputFile
+
+Install-Script -Name Get-WindowsAutopilotInfoCommunity -Force
+
+Get-WindowsAutoPilotInfoCommunity.ps1 `
+  -Online `
+  -InputFile	$OutputFile`
+  -GroupTag		$selectedTag `
+  -Assign `
+  -TenantID		$TenantID `
+  -AppID		$AppID `
+  -AppSecret	$AppSecret
 
 # Launch OSDCloud
 Write-Host "Starting OSDCloud lite touch (must confirm erase disk)" -ForegroundColor Green

@@ -4,36 +4,18 @@ $OSEdition   = 'Education'
 $OSActivation= 'Volume'
 $OSLanguage  = 'en-us'
 
-# Retrieve stored credentials from Machine environment
-$TenantID   = [Environment]::GetEnvironmentVariable('OSDCloudAPTenantID','Machine')  # $env:OSDCloudAPTenantID doesn't work within WinPE
-$AppID      = [Environment]::GetEnvironmentVariable('OSDCloudAPAppID','Machine')
-$AppSecret  = [Environment]::GetEnvironmentVariable('OSDCloudAPAppSecret','Machine')
+# Retrieve stored credentials from Proces environment
+$TenantID   = [Environment]::GetEnvironmentVariable('OSDCloudAPTenantID','Process')  # $env:OSDCloudAPTenantID doesn't work within WinPE
+$AppID      = [Environment]::GetEnvironmentVariable('OSDCloudAPAppID','Process')
+$AppSecret  = [Environment]::GetEnvironmentVariable('OSDCloudAPAppSecret','Process')
 
 # Echo values for verification
 Write-Host "TenantID:   $TenantID"
 Write-Host "AppID:      $AppID"
 Write-Host "AppSecret:  $AppSecret"
 
-# Define your tags
-$groupTags = @(
-    'Entra-ENG-Faculty',
-    'Entra-000-Faculty',
-    'Entra-010-Faculty',
-    'Entra-013-Faculty'
-)
-
 # Pop up a one-column GridView with built-in filter/search
-$GroupTag = $groupTags |
-    Out-GridView `
-      -Title 'Select Autopilot Group Tag' `
-      -OutputMode Single
-
-# Change to skip uploading hash if no tag selected
-if (-not $GroupTag) {
-    Write-Warning 'No Group Tag selected. Exiting.'
-    Stop-Transcript
-    exit 1
-}
+$GroupTag = "Entra-ENG-Faculty"
 
 # Remaining script operations...
 $oa3tool = 'https://github.com/rbond6002/OSD/raw/refs/heads/main/oa3tool.exe'

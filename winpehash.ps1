@@ -11,11 +11,6 @@ $AppSecret  = [Environment]::GetEnvironmentVariable('OSDCloudAPAppSecret','Machi
 
 $OutputFile = "X:\OSDCloud\Config\Scripts\AutopilotHash.csv"
 
-# Echo values for verification
-Write-Host "TenantID:   $TenantID"
-Write-Host "AppID:      $AppID"
-Write-Host "AppSecret:  $AppSecret"
-
 # Pop up a one-column GridView with built-in filter/search
 $GroupTag = "Entra-ENG-Faculty"
 

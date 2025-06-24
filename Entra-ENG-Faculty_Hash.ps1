@@ -1,10 +1,10 @@
-#OSDCloud Variables
+ #OSDCloud Variables
 $OSName      = 'Windows 11 24H2 x64'
 $OSEdition   = 'Education'
 $OSActivation= 'Volume'
 $OSLanguage  = 'en-us'
 
-Write-DarkGrayHost "Copying PFX file & the import script"
+Write-Host "Copying PFX file & the import script"
 Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
 
 # Launch OSDCloud
@@ -53,4 +53,4 @@ $Panther      = 'C:\Windows\Panther'
 $UnattendPath = Join-Path $Panther 'Unattend.xml'
 $UnattendXml | Out-File -FilePath $UnattendPath -Encoding utf8 -Width 2000 -Force
 
-Write-Host "Restarting" -ForegroundColor Green
+Write-Host "Restarting" -ForegroundColor Green 

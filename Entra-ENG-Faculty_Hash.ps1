@@ -6,7 +6,6 @@ $OSLanguage  = 'en-us'
 
 Write-DarkGrayHost "Copying PFX file & the import script"
 Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
-}
 
 # Launch OSDCloud
 Write-Host "Starting OSDCloud lite touch (must confirm erase disk)" -ForegroundColor Green

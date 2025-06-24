@@ -58,7 +58,6 @@ If (Test-Path $hashFile) {
       ConvertTo-Csv -NoTypeInformation |
       ForEach-Object { $_ -replace '"','' } |
       Out-File $OutputFile
-
 } else {
 
     $msg = "$(Get-Date -Format o) - ERROR: Hash file not found at $hashFile"

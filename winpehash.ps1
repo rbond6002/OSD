@@ -95,15 +95,15 @@ function Get-NtpTime {
     return (Get-Date '1900-01-01').AddMilliseconds($milliseconds)
 }
 
+# Upload the hash
+Start-Sleep 3
+
 # Retrieve NTP time and set system clock
 echo "Fetching time from time.windows.com..."
 $DateTime = Get-NtpTime -Server 'time.windows.com'
 Write-Host "NTP time: $DateTime"
 Set-Date -Date $DateTime
 Write-Host "System clock updated."
-
-# Upload the hash
-Start-Sleep 3
 
 # Install and import modules
 Invoke-Expression (Invoke-RestMethod sandbox.osdcloud.com)

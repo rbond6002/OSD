@@ -99,11 +99,11 @@ function Get-NtpTime {
 Start-Sleep 3
 
 # Retrieve NTP time and set system clock
-echo "Fetching time from time.windows.com..."
+Write-Host "Fetching time from time.windows.com..."  -ForegroundColor Green
 $DateTime = Get-NtpTime -Server 'time.windows.com'
-Write-Host "NTP time: $DateTime"
+Write-Host "NTP time: $DateTime"  -ForegroundColor Green
 Set-Date -Date $DateTime
-Write-Host "System clock updated."
+Write-Host "System clock updated."  -ForegroundColor Green
 
 # Install and import modules
 Invoke-Expression (Invoke-RestMethod sandbox.osdcloud.com)

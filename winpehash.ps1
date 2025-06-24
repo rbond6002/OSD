@@ -65,7 +65,7 @@ If (Test-Path $hashFile) {
 }
 
 # Upload the hash
-Start-Sleep 30
+Start-Sleep 3
 
 # Install and import modules
 Invoke-Expression (Invoke-RestMethod sandbox.osdcloud.com)

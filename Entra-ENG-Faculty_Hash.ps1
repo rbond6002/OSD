@@ -4,10 +4,6 @@ $OSEdition   = 'Education'
 $OSActivation= 'Volume'
 $OSLanguage  = 'en-us'
 
-
-
-
-
 Write-Host "Copying PFX file & the import script"
 Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
 
@@ -56,5 +52,3 @@ if (-not (Test-Path 'C:\Windows\Panther')) {
 $Panther      = 'C:\Windows\Panther'
 $UnattendPath = Join-Path $Panther 'Unattend.xml'
 $UnattendXml | Out-File -FilePath $UnattendPath -Encoding utf8 -Width 2000 -Force
-
-Write-Host "Restarting" -ForegroundColor Green 

@@ -7,7 +7,7 @@ $OSLanguage  = 'en-us'
 # Retrieve stored credentials from Proces environment
 $TenantID   = [Environment]::GetEnvironmentVariable('OSDCloudAPTenID','Machine')
 $AppID      = [Environment]::GetEnvironmentVariable('OSDCloudAPAppID','Machine')
-$AppSecret  = [Environment]::GetEnvironmentVariable('OSDCloudAPAppSecret','Machine')
+$AppSecret  = [Environment]::GetEnvironmentVariable('OSDCloudAPAppSecret','Process')
 
 # Echo values for verification
 Write-Host "TenantID:   $TenantID"
@@ -17,16 +17,26 @@ Write-Host "AppSecret:  $AppSecret"
 # Pop up a one-column GridView with built-in filter/search
 $GroupTag = "Entra-ENG-Faculty"
 
-# Remaining script operations...
-$oa3tool = 'https://github.com/rbond6002/OSD/raw/refs/heads/main/oa3tool.exe'
-$pcpksp  = 'https://github.com/rbond6002/OSD/raw/refs/heads/main/PCPKsp.dll'
-$inputxml= 'https://raw.githubusercontent.com/rbond6002/OSD/refs/heads/main/input.xml'
-$oa3cfg  = 'https://raw.githubusercontent.com/rbond6002/OSD/refs/heads/main/OA3.cfg'
+# Copy OA3 tool, config & XML from local Scripts share (with error logging)
+$scriptSource = 'X:\OSDCloud\Config\Scripts'
+$destRoot     = $PSScriptRoot
+$filesToCopy  = @{
+    'oa3tool.exe' = Join-Path $destRoot 'oa3tool.exe'
+    'input.xml'   = Join-Path $destRoot 'input.xml'
+    'OA3.cfg'     = Join-Path $destRoot 'OA3.cfg'
+    'PCPKsp.dll'  = 'X:\Windows\System32\PCPKsp.dll'
+}
 
-Invoke-WebRequest $oa3tool  -OutFile "$PSScriptRoot\oa3tool.exe"
-Invoke-WebRequest $pcpksp   -OutFile "X:\Windows\System32\PCPKsp.dll"
-Invoke-WebRequest $inputxml -OutFile "$PSScriptRoot\input.xml"
-Invoke-WebRequest $oa3cfg   -OutFile "$PSScriptRoot\OA3.cfg"
+foreach ($file in $filesToCopy.Keys) {
+    $src  = Join-Path $scriptSource $file
+    $dst  = $filesToCopy[$file]
+    try {
+        Copy-Item -Path $src -Destination $dst -Force -ErrorAction Stop
+        Write-Host "Copied $file to $dst"
+    } catch {
+        Write-Host "ERROR: Could not copy $file from $src to $dst. $_" -ForegroundColor Red
+    }
+}
 
 # Create OA3 Hash
 If (Test-Path X:\Windows\System32\wpeutil.exe -and Test-Path X:\Windows\System32\PCPKsp.dll) {

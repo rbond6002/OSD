@@ -1,6 +1,3 @@
-#updated 1.0
-$GroupTag = 'Entra-ENG-Faculty'
-
 #OSDCloud Variables
 $OSName      = 'Windows 11 24H2 x64'
 $OSEdition   = 'Education'
@@ -62,7 +59,7 @@ $UnattendXml = @'
         <RunSynchronousCommand wcm:action="add">
           <Order>1</Order>
           <Description>Start Hash Import</Description>
-          <Path>PowerShell -ExecutionPolicy Bypass -File C:\AutoPilotHash\AutoPilot.ps1 -AuthFile C:\AutoPilotHash\Auth.ps1 -GroupTag `"$GroupTag`"</Path>
+          <Path>PowerShell -ExecutionPolicy Bypass -File C:\AutoPilotHash\AutoPilot.ps1 -AuthFile C:\AutoPilotHash\Auth.ps1 -GroupTag "Entra-ENG-Faculty"</Path>
         </RunSynchronousCommand>
         <RunSynchronousCommand wcm:action="add">
           <Order>2</Order>

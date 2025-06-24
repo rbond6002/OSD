@@ -19,11 +19,10 @@ $GroupTag = "Entra-ENG-Faculty"
 
 # Copy OA3 tool, config & XML from local Scripts share (with error logging)
 $scriptSource = 'X:\OSDCloud\Config\Scripts'
-$destRoot     = $PSScriptRoot
 $filesToCopy  = @{
-    'oa3tool.exe' = Join-Path $destRoot 'oa3tool.exe'
-    'input.xml'   = Join-Path $destRoot 'input.xml'
-    'OA3.cfg'     = Join-Path $destRoot 'OA3.cfg'
+    'oa3tool.exe' = Join-Path $PSScriptRoot 'oa3tool.exe'
+    'input.xml'   = Join-Path $PSScriptRoot 'input.xml'
+    'OA3.cfg'     = Join-Path $PSScriptRoot 'OA3.cfg'
     'PCPKsp.dll'  = 'X:\Windows\System32\PCPKsp.dll'
 }
 

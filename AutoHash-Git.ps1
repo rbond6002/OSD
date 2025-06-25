@@ -46,7 +46,7 @@ $UnattendXml = @"
         <RunSynchronousCommand wcm:action="add">
           <Order>2</Order>
           <Description>Run SetupComplete Command</Description>
-          <Path>cmd /c C:\Windows\Setup\Scripts\SetupComplete.cmd</Path>
+          <Path>cmd.exe /c /start /wait C:\Windows\Setup\Scripts\SetupComplete.cmd</Path>
         </RunSynchronousCommand>
       </RunSynchronous>
     </component>

@@ -5,6 +5,7 @@ $OSActivation= 'Volume'
 $OSLanguage  = 'en-us'
 
 $GroupTag = [Environment]::GetEnvironmentVariable('GrouptagID','Machine') 
+
 Write-Host $GroupTag
 
 # Launch OSDCloud

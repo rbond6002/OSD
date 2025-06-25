@@ -44,14 +44,14 @@ $UnattendXml = @"
         </RunSynchronousCommand>
         <RunSynchronousCommand wcm:action="add">
           <Order>2</Order>
-          <Description>Run SetupComplete Script</Description>
-          <Path>PowerShell -ExecutionPolicy Bypass -File C:\Windows\Setup\Scripts\SetupComplete.ps1</Path>
+          <Description>Run SetupComplete Command</Description>
+          <Path>cmd /c C:\Windows\Setup\Scripts\SetupComplete.cmd</Path>
         </RunSynchronousCommand>
       </RunSynchronous>
     </component>
   </settings>
 </unattend>
-"@
+"@"
 
 # Ensure Panther folder and write Unattend.xml
 if (-not (Test-Path 'C:\Windows\Panther')) {

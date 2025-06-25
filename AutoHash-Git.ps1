@@ -39,7 +39,8 @@ PowerShell.exe -Command "& {
     }
     # Stop logging
     Stop-Transcript
-}"'@
+}"
+'@
 
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 

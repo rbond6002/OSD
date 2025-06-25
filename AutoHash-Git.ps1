@@ -13,7 +13,7 @@ Write-Host "Afterwards, it will add the device to Autopilot, Group Tag it ($Grou
 Write-Host "Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart"
 Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart
 
-Write-DarkGrayHost "Copying PFX file & the import script"
+Write-Host "Copying PFX file & the import script"
 Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
 
 # Create SetupComplete.cmd (runs at OOBE)

@@ -52,7 +52,7 @@ $UnattendXml = @"
     </component>
   </settings>
 </unattend>
-"@"
+"@
 
 # Ensure Panther folder and write Unattend.xml
 if (-not (Test-Path 'C:\Windows\Panther')) {

@@ -20,28 +20,26 @@ Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
 # Create SetupComplete.cmd (runs at OOBE)
 Write-Host "Create C:\Windows\Setup\Scripts\SetupComplete.cmd" -ForegroundColor Green
 $SetupCompleteCMD = @'
-PowerShell.exe -Command Set-ExecutionPolicy RemoteSigned -Force
-Start-Transcript -Path "$env:ProgramData\Logs\Management\$(Get-Date -Format yyyy-MM-dd-HHmm)-Deploy-OOBE.log"
-
-If (Test-Path -Path 'C:\OSDCloud\Logs') {
-    Move-Item 'C:\OSDCloud\Logs\*' -Destination "$env:ProgramData\Logs\Management" -Force -Verbose
-}
-
-# Cleanup directories
-If (Test-Path -Path 'C:\OSDCloud') {
-    Remove-Item -Path 'C:\OSDCloud' -Recurse -Force -Verbose
-}
-If (Test-Path -Path 'C:\Drivers') {
-    Remove-Item -Path 'C:\Drivers' -Recurse -Force -Verbose
-}
-# Cleanup AutoPilotHash folder
-If (Test-Path -Path 'C:\AutoPilotHash') {
-    Remove-Item -Path 'C:\AutoPilotHash' -Recurse -Force -Verbose
-}
-
-# Stop logging
-Stop-Transcript
-'@
+PowerShell.exe -Command "& {
+    Set-ExecutionPolicy RemoteSigned -Force;
+    Start-Transcript -Path \"$env:ProgramData\\Logs\\Management\\$(Get-Date -Format yyyy-MM-dd-HHmm)-Deploy-OOBE.log\";
+    If (Test-Path -Path 'C:\OSDCloud\\Logs') {
+        Move-Item 'C:\OSDCloud\\Logs\\*' -Destination \"$env:ProgramData\\Logs\\Management\" -Force -Verbose;
+    }
+    # Cleanup directories
+    If (Test-Path -Path 'C:\OSDCloud') {
+        Remove-Item -Path 'C:\OSDCloud' -Recurse -Force -Verbose;
+    }
+    If (Test-Path -Path 'C:\Drivers') {
+        Remove-Item -Path 'C:\Drivers' -Recurse -Force -Verbose;
+    }
+    # Cleanup AutoPilotHash folder
+    If (Test-Path -Path 'C:\AutoPilotHash') {
+        Remove-Item -Path 'C:\AutoPilotHash' -Recurse -Force -Verbose;
+    }
+    # Stop logging
+    Stop-Transcript
+}"'@
 
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 

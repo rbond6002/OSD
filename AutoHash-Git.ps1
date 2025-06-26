@@ -23,7 +23,7 @@ Start-Transcript -Path "$env:ProgramData\Logs\Management\$(Get-Date -Format yyyy
 
 # Move OSDCloud Logs
 If (Test-Path -Path 'C:\OSDCloud\Logs') {
-    Move-Item 'C:\OSDCloud\\Logs\*' -Destination "$env:ProgramData\Logs\Management" -Force -Verbose
+    Move-Item 'C:\OSDCloud\Logs\*' -Destination "$env:ProgramData\Logs\Management" -Force -Verbose
 }
 
 # Cleanup directories

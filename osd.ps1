@@ -10,11 +10,40 @@ Write-host "Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $
 
 Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart
 
-# Create C:\Windows\Setup\Scripts\SetupComplete.cmd (automatically runs in OOBE)
+$cleanupContent = @'
+# Start logging
+Start-Transcript -Path "$env:ProgramData\Logs\Management\$(Get-Date -Format yyyy-MM-dd-HHmm)-Deploy-OOBE.log"
+
+# Move OSDCloud Logs
+If (Test-Path -Path 'C:\OSDCloud\Logs') {
+    Move-Item 'C:\OSDCloud\\Logs\*' -Destination "$env:ProgramData\Logs\Management" -Force -Verbose
+}
+
+# Cleanup directories
+If (Test-Path -Path 'C:\OSDCloud') {
+    Remove-Item -Path 'C:\OSDCloud' -Recurse -Force -Verbose
+}
+If (Test-Path -Path 'C:\Drivers') {
+    Remove-Item -Path 'C:\Drivers' -Recurse -Force -Verbose
+}
+# Cleanup AutoPilotHash folder
+If (Test-Path -Path 'C:\AutoPilotHash') {
+    Remove-Item -Path 'C:\AutoPilotHash' -Recurse -Force -Verbose
+}
+
+# Stop logging
+Stop-Transcript
+'@
+
+# Destination for the new script
+$destPath = "C:\Windows\Setup\Scripts\cleanup.ps1"
+$cleanupContent | Out-File -FilePath $destPath -Encoding ascii -Force
+
+# Create SetupComplete.cmd (runs at OOBE)
 Write-Host "Create C:\Windows\Setup\Scripts\SetupComplete.cmd" -ForegroundColor Green
 $SetupCompleteCMD = @'
 PowerShell.exe -Command Set-ExecutionPolicy RemoteSigned -Force
-PowerShell.exe -Command "& { Invoke-Expression -Command (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/rbond6002/OSD/refs/heads/main/cleanup.ps1') }"
+PowerShell.exe -ExecutionPolicy Bypass -File C:\Windows\Setup\Scripts\cleanup.ps1
 '@
 $SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\SetupComplete.cmd' -Encoding ascii -Force
 

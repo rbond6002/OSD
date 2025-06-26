@@ -26,10 +26,6 @@ If (Test-Path -Path 'C:\OSDCloud') {
 If (Test-Path -Path 'C:\Drivers') {
     Remove-Item -Path 'C:\Drivers' -Recurse -Force -Verbose
 }
-# Cleanup AutoPilotHash folder
-If (Test-Path -Path 'C:\AutoPilotHash') {
-    Remove-Item -Path 'C:\AutoPilotHash' -Recurse -Force -Verbose
-}
 
 # Stop logging
 Stop-Transcript

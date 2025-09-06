@@ -8,6 +8,7 @@ $GroupTag = [Environment]::GetEnvironmentVariable('GrouptagID','Machine')
 
 Write-Host $GroupTag
 
+$Win32ComputerSystem = Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -Property *
 Write-Host 'Manufacturer:' $Win32ComputerSystem.Manufacturer
 Write-Host 'Model:' $Win32ComputerSystem.Model
 
@@ -16,9 +17,6 @@ Write-Host "Starting OSDCloud lite touch (must confirm erase disk)" -ForegroundC
 Write-Host "Afterwards, it will add the device to Autopilot, Group Tag it ($GroupTag), and wait for a deployment profile to be assigned." -ForegroundColor Green
 Write-Host "Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart"
 Start-OSDCloud -OSName $OSName -OSEdition $OSEdition -OSActivation $OSActivation -OSLanguage $OSLanguage -Restart
-
-
-$Win32ComputerSystem = Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -Property *
 
 if ($Win32ComputerSystem.Manufacturer -like "*Microsoft*") {
     Write-Host "Move drivers for Surface"

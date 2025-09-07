@@ -132,11 +132,6 @@ $UnattendXml = @"
           <Description>Start Hash Import</Description>
           <Path>PowerShell -ExecutionPolicy Bypass -File C:\OSDCloud\Scripts\AutoHash-var.ps1 -GroupTag $GroupTag</Path>
         </RunSynchronousCommand>
-        <RunSynchronousCommand wcm:action="add">
-          <Order>2</Order>
-          <Description>Run SetupComplete Command</Description>
-          <Path>cmd /c C:\Windows\Setup\Scripts\Clean.cmd</Path>
-        </RunSynchronousCommand>
       </RunSynchronous>
     </component>
   </settings>

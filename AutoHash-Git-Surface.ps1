@@ -12,29 +12,6 @@ $Win32ComputerSystem = Get-CimInstance -ClassName Win32_ComputerSystem | Select-
 Write-Host 'Manufacturer:' $Win32ComputerSystem.Manufacturer
 Write-Host 'Model:' $Win32ComputerSystem.Model
 
-# Cleanup Content
-$cleanupContent = @'
-# Start logging
-Start-Transcript -Path "$env:ProgramData\Logs\Management\$(Get-Date -Format yyyy-MM-dd-HHmm)-Deploy-OOBE.log"
-
-# Move OSDCloud Logs
-If (Test-Path -Path 'C:\OSDCloud\Logs') {
-    Move-Item 'C:\OSDCloud\Logs\*' -Destination "$env:ProgramData\Logs\Management" -Force -Verbose
-}
-
-# Cleanup directories
-If (Test-Path -Path 'C:\OSDCloud') {
-    Remove-Item -Path 'C:\OSDCloud' -Recurse -Force -Verbose
-}
-If (Test-Path -Path 'C:\Drivers') {
-    Remove-Item -Path 'C:\Drivers' -Recurse -Force -Verbose
-}
-
-# Stop logging
-Stop-Transcript
-'@
-
-if ($Win32ComputerSystem.Manufacturer -like "*Microsoft*") {
 # Create SetupComplete.cmd
 Write-Host "Create X:\OSDCloud\Config\Scripts\SetupComplete\SetupComplete.cmd" -ForegroundColor Green
 $SetupCompleteCMD = @'
@@ -42,8 +19,9 @@ C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypas
 '@
 $SetupCompleteCMD | Out-File -FilePath 'X:\OSDCloud\Config\Scripts\SetupComplete\SetupComplete.cmd' -Encoding ascii -Force
 
+if ($Win32ComputerSystem.Manufacturer -like "*Microsoft*") {
 # Create SetupComplete.ps1
-$surfaceDriverContent = @'
+$SetupCompletePSContent = @'
 $driverFolder = "C:\OSDCloud\Drivers"
 $logPath      = "C:\OSDCloud\DriverPack.log"
 
@@ -81,14 +59,31 @@ If (Test-Path -Path 'C:\OSDCloud') {
 If (Test-Path -Path 'C:\Drivers') {
     Remove-Item -Path 'C:\Drivers' -Recurse -Force -Verbose
 }
-
-# Stop logging
 '@
 
-# Destination for the Surface Driver script
-$surfaceDriverdestPath = "X:\OSDCloud\Config\Scripts\SetupComplete\SetupComplete.ps1"
-$surfaceDriverContent | Out-File -FilePath $surfaceDriverdestPath -Encoding ascii -Force
 }
+else{
+# Create SetupComplete.ps1
+$SetupCompletePSContent = @'
+# Move OSDCloud Logs
+If (Test-Path -Path 'C:\OSDCloud\Logs') {
+    Move-Item 'C:\OSDCloud\Logs\*' -Destination "$env:ProgramData\Logs\Management" -Force -Verbose
+}
+
+# Cleanup directories
+If (Test-Path -Path 'C:\OSDCloud') {
+    Remove-Item -Path 'C:\OSDCloud' -Recurse -Force -Verbose
+}
+If (Test-Path -Path 'C:\Drivers') {
+    Remove-Item -Path 'C:\Drivers' -Recurse -Force -Verbose
+}
+'@
+}
+
+# Create SetupComplete.ps1
+$SetupCompletePSdestPath = "X:\OSDCloud\Config\Scripts\SetupComplete\SetupComplete.ps1"
+$SetupCompletePSContent | Out-File -FilePath $surfaceDriverdestPath -Encoding ascii -Force
+
 # Launch OSDCloud
 Write-Host "Starting OSDCloud lite touch (must confirm erase disk)" -ForegroundColor Green
 Write-Host "Afterwards, it will add the device to Autopilot, Group Tag it ($GroupTag), and wait for a deployment profile to be assigned." -ForegroundColor Green

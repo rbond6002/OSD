@@ -128,12 +128,12 @@ $UnattendXml = @"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       <RunSynchronous>
         <RunSynchronousCommand wcm:action="add">
-          <Order>2</Order>
+          <Order>1</Order>
           <Description>Start Hash Import</Description>
           <Path>PowerShell -ExecutionPolicy Bypass -File C:\OSDCloud\Scripts\AutoHash-var.ps1 -GroupTag $GroupTag</Path>
         </RunSynchronousCommand>
         <RunSynchronousCommand wcm:action="add">
-          <Order>3</Order>
+          <Order>2</Order>
           <Description>Run SetupComplete Command</Description>
           <Path>cmd /c C:\Windows\Setup\Scripts\Clean.cmd</Path>
         </RunSynchronousCommand>

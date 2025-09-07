@@ -12,6 +12,40 @@ $Win32ComputerSystem = Get-CimInstance -ClassName Win32_ComputerSystem | Select-
 Write-Host 'Manufacturer:' $Win32ComputerSystem.Manufacturer
 Write-Host 'Model:' $Win32ComputerSystem.Model
 
+# Cleanup Content
+$cleanupContent = @'
+# Start logging
+Start-Transcript -Path "$env:ProgramData\Logs\Management\$(Get-Date -Format yyyy-MM-dd-HHmm)-Deploy-OOBE.log"
+
+# Move OSDCloud Logs
+If (Test-Path -Path 'C:\OSDCloud\Logs') {
+    Move-Item 'C:\OSDCloud\Logs\*' -Destination "$env:ProgramData\Logs\Management" -Force -Verbose
+}
+
+# Cleanup directories
+If (Test-Path -Path 'C:\OSDCloud') {
+    Remove-Item -Path 'C:\OSDCloud' -Recurse -Force -Verbose
+}
+If (Test-Path -Path 'C:\Drivers') {
+    Remove-Item -Path 'C:\Drivers' -Recurse -Force -Verbose
+}
+
+# Stop logging
+Stop-Transcript
+'@
+
+# Destination for the Cleanup script
+$destPath = "C:\Windows\Setup\Scripts\cleanup.ps1"
+$cleanupContent | Out-File -FilePath $destPath -Encoding ascii -Force
+
+# Create SetupComplete.cmd (runs at OOBE)
+Write-Host "Create C:\Windows\Setup\Scripts\SetupComplete.cmd" -ForegroundColor Green
+$SetupCompleteCMD = @'
+PowerShell.exe -Command Set-ExecutionPolicy RemoteSigned -Force
+PowerShell.exe -ExecutionPolicy Bypass -File C:\Windows\Setup\Scripts\cleanup.ps1
+'@
+$SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\Clean.cmd' -Encoding ascii -Force
+
 if ($Win32ComputerSystem.Manufacturer -like "*Microsoft*") {
 # Create SetupComplete.cmd
 Write-Host "Create X:\OSDCloud\Config\Scripts\SetupComplete\SetupComplete.cmd" -ForegroundColor Green
@@ -79,40 +113,6 @@ if ($Win32ComputerSystem.Manufacturer -like "*Microsoft*") {
 
 Write-Host "Copying PFX file & the import script"
 Copy-Item X:\OSDCloud\Config\Scripts C:\OSDCloud\ -Recurse -Force
-
-# Cleanup Content
-$cleanupContent = @'
-# Start logging
-Start-Transcript -Path "$env:ProgramData\Logs\Management\$(Get-Date -Format yyyy-MM-dd-HHmm)-Deploy-OOBE.log"
-
-# Move OSDCloud Logs
-If (Test-Path -Path 'C:\OSDCloud\Logs') {
-    Move-Item 'C:\OSDCloud\Logs\*' -Destination "$env:ProgramData\Logs\Management" -Force -Verbose
-}
-
-# Cleanup directories
-If (Test-Path -Path 'C:\OSDCloud') {
-    Remove-Item -Path 'C:\OSDCloud' -Recurse -Force -Verbose
-}
-If (Test-Path -Path 'C:\Drivers') {
-    Remove-Item -Path 'C:\Drivers' -Recurse -Force -Verbose
-}
-
-# Stop logging
-Stop-Transcript
-'@
-
-# Destination for the Cleanup script
-$destPath = "C:\Windows\Setup\Scripts\cleanup.ps1"
-$cleanupContent | Out-File -FilePath $destPath -Encoding ascii -Force
-
-# Create SetupComplete.cmd (runs at OOBE)
-Write-Host "Create C:\Windows\Setup\Scripts\SetupComplete.cmd" -ForegroundColor Green
-$SetupCompleteCMD = @'
-PowerShell.exe -Command Set-ExecutionPolicy RemoteSigned -Force
-PowerShell.exe -ExecutionPolicy Bypass -File C:\Windows\Setup\Scripts\cleanup.ps1
-'@
-$SetupCompleteCMD | Out-File -FilePath 'C:\Windows\Setup\Scripts\Clean.cmd' -Encoding ascii -Force
 
 # Build Unattend.xml with static path import & cleanup, with group tag variable
 $UnattendXml = @"

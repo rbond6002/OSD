@@ -12,7 +12,15 @@ $Win32ComputerSystem = Get-CimInstance -ClassName Win32_ComputerSystem | Select-
 Write-Host 'Manufacturer:' $Win32ComputerSystem.Manufacturer
 Write-Host 'Model:' $Win32ComputerSystem.Model
 
-# Surface Driver Content
+if ($Win32ComputerSystem.Manufacturer -like "*Microsoft*") {
+# Create SetupComplete.cmd
+Write-Host "Create X:\OSDCloud\Config\Scripts\SetupComplete\SetupComplete.cmd" -ForegroundColor Green
+$SetupCompleteCMD = @'
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File "%~dp0SetupComplete.ps1"
+'@
+$SetupCompleteCMD | Out-File -FilePath 'X:\OSDCloud\Config\Scripts\SetupComplete\SetupComplete.cmd' -Encoding ascii -Force
+
+# Create SetupComplete.ps1
 $surfaceDriverContent = @'
 $driverFolder = "C:\OSDCloud\Drivers"
 $logPath      = "C:\OSDCloud\DriverPack.log"
@@ -41,9 +49,9 @@ if ($driverPackage) {
 '@
 
 # Destination for the Surface Driver script
-$surfaceDriverdestPath = "X:\OSDCloud\Config\Scripts\SetupComplete\surfaceDriverInstall.ps1"
+$surfaceDriverdestPath = "X:\OSDCloud\Config\Scripts\SetupComplete\SetupComplete.ps1"
 $surfaceDriverContent | Out-File -FilePath $surfaceDriverdestPath -Encoding ascii -Force
-
+}
 # Launch OSDCloud
 Write-Host "Starting OSDCloud lite touch (must confirm erase disk)" -ForegroundColor Green
 Write-Host "Afterwards, it will add the device to Autopilot, Group Tag it ($GroupTag), and wait for a deployment profile to be assigned." -ForegroundColor Green

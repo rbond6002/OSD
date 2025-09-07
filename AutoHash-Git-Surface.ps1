@@ -82,7 +82,7 @@ If (Test-Path -Path 'C:\Drivers') {
 
 # Create SetupComplete.ps1
 $SetupCompletePSdestPath = "X:\OSDCloud\Config\Scripts\SetupComplete\SetupComplete.ps1"
-$SetupCompletePSContent | Out-File -FilePath $surfaceDriverdestPath -Encoding ascii -Force
+$SetupCompletePSContent | Out-File -FilePath $SetupCompletePSdestPath -Encoding ascii -Force
 
 # Launch OSDCloud
 Write-Host "Starting OSDCloud lite touch (must confirm erase disk)" -ForegroundColor Green

@@ -1,5 +1,5 @@
 #OSDCloud Variables
-$OSName      = 'Windows 11 24H2 x64'
+$OSName      = 'Windows 11 25H2 x64'
 $OSEdition   = 'Education'
 $OSActivation= 'Volume'
 $OSLanguage  = 'en-us'

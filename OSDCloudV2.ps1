@@ -5,6 +5,5 @@ Deploy-OSDCloud `
     -OperatingSystem 'Windows 11 26H2' `
     -OSEdition 'Education' `
     -OSActivation 'Volume' `
-    -OSLanguageCode 'en-us'
-
-Restart-Computer -Force
+    -OSLanguageCode 'en-us' `
+    -PostAction Restart
